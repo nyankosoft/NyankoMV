@@ -2,7 +2,56 @@
 
 
 #include <string>
-//#include <boost/filesystem.hpp>
+#include <vector>
+//#include <boost/filesystem.hpp> // The app fails to start when this is included
+
+//#pragma managed(push, off)
+//#include <boost/filesystem.hpp> // The app still fails to start when this is included
+//#pragma managed(pop)
+
+//#pragma managed(push, off)
+//#include "boost_filesystem.hpp"
+//#pragma managed(pop)
+
+
+#include "boost_filesystem.hpp"
+
+#include <msclr/marshal_cppstd.h>
+
+using namespace msclr::interop;
+
+
+#ifdef _DEBUG
+#pragma comment (lib,"windows_forms_application_boost_wrapper_d.lib")
+#else /* _DEBUG */
+#pragma comment (lib,"windows_forms_application_boost_wrapper.lib")
+#endif /* _DEBUG */
+
+
+System::String^ ToString( const std::string& src )
+{
+	return gcnew System::String(src.c_str());
+}
+
+
+std::string to_string( System::String^ src )
+{
+    msclr::interop::marshal_context context;
+    return std::string( context.marshal_as<std::string>(src) );
+}
+
+
+class FilenameEditInfo
+{
+public:
+	FilenameEditInfo(){}
+	~FilenameEditInfo(){}
+
+	std::string orig_pathname;
+
+	std::string to_leaf;
+};
+
 
 
 namespace namechanger {
@@ -193,9 +242,23 @@ namespace namechanger {
 	private: System::Void Form1_DragLeave_InputRichTextBox(System::Object^  sender, EventArgs^ e) {
 				 label2->Text = "DragLeave";
 			}
+//	private: System::Void CreatePathnameList(Array^ file_drop_object_array, std::vector<boost::filesystem::path>& pathnames)
+//			{
+//				pathnames.resize( file_drop_object_array->Length );
+//
+//				String^ dropped_objects_string;
+//				for( int i=0; i<file_drop_object_array->Length; i++ )
+//				{
+//					Object^ element = file_drop_object_array->GetValue(i);
+//					//Type^ type = element->GetType();
+//					String^ element_string = element->ToString();
+//					dropped_objects_string += element_string;
+//					dropped_objects_string += "\n";
+//				}
+//			}
 	private: System::Void Form1_DragDrop_InputRichTextBox(System::Object^  sender, DragEventArgs^ e)
 			{
-				IDataObject^ data_object = e->Data;
+				System::Windows::Forms::IDataObject^ data_object = e->Data;
 				Object^ file_drop_object = data_object->GetData( DataFormats::FileDrop );
 				Array^ file_drop_object_array = (Array^)data_object->GetData( DataFormats::FileDrop );
 				if( file_drop_object == nullptr )
@@ -204,27 +267,37 @@ namespace namechanger {
 					return;
 				}
 
-				String^ dropped_objects_string;
-				for( int i=0; i<file_drop_object_array->Length; i++ )
-				{
-					Object^ element = file_drop_object_array->GetValue(i);
-					Type^ type = element->GetType();
-					String^ element_string = element->ToString();
-					dropped_objects_string += element_string;
-					dropped_objects_string += "\n";
-				}
+
+//				std::vector<boost::filesystem::path> pathnames;
+//				CreatePathnameList( file_drop_object_array, pathnames );
 
 				String^ num_items = System::Convert::ToString(file_drop_object_array->Length);
 
-				String^ obj_str = file_drop_object->ToString();
+//				String^ obj_str = file_drop_object->ToString();
+
+				String^ obj_str = "";
+				std::vector<FilenameEditInfo> edit_info;
+				edit_info.resize( file_drop_object_array->Length );
+				for( int i=0; i<file_drop_object_array->Length; i++ )
+				{
+					Object^ obj = file_drop_object_array->GetValue(i);
+//					edit_info[i].orig_pathname = to_string( obj->ToString() );
+
+//					obj_str += obj->ToString() + "\n";
+					obj_str += ::ToString( get_leaf( edit_info[i].orig_pathname ) );
+				}
 
 				MessageBox::Show(
-					obj_str + "\n" + dropped_objects_string,
+					obj_str,// + "\n" + dropped_objects_string,
 					"DragDrop: " + num_items,
 					MessageBoxButtons::OK
 					);
 
-				richTextBox1->Text = dropped_objects_string;
+				richTextBox1->Text = "";
+//				for( size_t i=0; i<pathnames.size(); i++ )
+//				{
+//					richTextBox1->Text += ::ToString( pathnames[i].leaf().string() );
+//				}
 
 				Form1_PrintEventInfo( sender, e );
 			}

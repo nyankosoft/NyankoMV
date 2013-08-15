@@ -15,6 +15,16 @@ std::string get_leaf( std::string pathname )
 	return path(pathname).leaf().string();
 }
 
+std::string get_parent_path( std::string pathname )
+{
+	return path(pathname).parent_path().string();
+}
+
+std::string concatenate_paths( std::string lhs, std::string rhs )
+{
+	return path( path(lhs)/path(rhs) ).string();
+}
+
 void rename_path( std::string old_pathname, std::string new_pathname )
 {
 	rename( path(old_pathname), path(new_pathname) );

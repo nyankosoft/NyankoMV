@@ -15,6 +15,10 @@ std::string get_leaf( std::string pathname )
 	return path(pathname).leaf().string();
 }
 
+void rename_path( std::string old_pathname, std::string new_pathname )
+{
+	rename( path(old_pathname), path(new_pathname) );
+}
 
 void get_files_in_directory( std::string directory_pathname, int depth )
 {

@@ -21,6 +21,7 @@ using namespace msclr::interop;
 #include "boost_filesystem.hpp"
 #include "log/DefaultLog.hpp"
 #include "log/StringAux.hpp"
+#include <boost/algorithm/string/replace.hpp>
 
 using namespace amorphous;
 
@@ -105,6 +106,11 @@ namespace namechanger {
 	private: System::Windows::Forms::Label^  label1;
 	private: System::Windows::Forms::Label^  label2;
 	private: System::Windows::Forms::Button^  button1;
+	private: System::Windows::Forms::Label^  label3;
+	private: System::Windows::Forms::TextBox^  textBox2;
+	private: System::Windows::Forms::TextBox^  textBox1;
+	private: System::Windows::Forms::Label^  label4;
+	private: System::Windows::Forms::Button^  button2;
 
 	protected: 
 
@@ -127,13 +133,19 @@ namespace namechanger {
 			this->label1 = (gcnew System::Windows::Forms::Label());
 			this->label2 = (gcnew System::Windows::Forms::Label());
 			this->button1 = (gcnew System::Windows::Forms::Button());
+			this->label3 = (gcnew System::Windows::Forms::Label());
+			this->label4 = (gcnew System::Windows::Forms::Label());
+			this->textBox1 = (gcnew System::Windows::Forms::TextBox());
+			this->textBox2 = (gcnew System::Windows::Forms::TextBox());
+			this->button2 = (gcnew System::Windows::Forms::Button());
+			this->groupBox1->SuspendLayout();
 			this->SuspendLayout();
 			// 
 			// richTextBox1
 			// 
 			this->richTextBox1->EnableAutoDragDrop = true;
 			this->richTextBox1->Location = System::Drawing::Point(48, 45);
-			this->richTextBox1->Margin = System::Windows::Forms::Padding(4, 4, 4, 4);
+			this->richTextBox1->Margin = System::Windows::Forms::Padding(4);
 			this->richTextBox1->Name = L"richTextBox1";
 			this->richTextBox1->ReadOnly = true;
 			this->richTextBox1->Size = System::Drawing::Size(500, 481);
@@ -144,7 +156,7 @@ namespace namechanger {
 			// richTextBox2
 			// 
 			this->richTextBox2->Location = System::Drawing::Point(588, 45);
-			this->richTextBox2->Margin = System::Windows::Forms::Padding(4, 4, 4, 4);
+			this->richTextBox2->Margin = System::Windows::Forms::Padding(4);
 			this->richTextBox2->Name = L"richTextBox2";
 			this->richTextBox2->Size = System::Drawing::Size(530, 480);
 			this->richTextBox2->TabIndex = 1;
@@ -153,14 +165,19 @@ namespace namechanger {
 			// 
 			// groupBox1
 			// 
+			this->groupBox1->Controls->Add(this->button2);
+			this->groupBox1->Controls->Add(this->textBox2);
+			this->groupBox1->Controls->Add(this->textBox1);
+			this->groupBox1->Controls->Add(this->label4);
+			this->groupBox1->Controls->Add(this->label3);
 			this->groupBox1->Location = System::Drawing::Point(48, 555);
-			this->groupBox1->Margin = System::Windows::Forms::Padding(4, 4, 4, 4);
+			this->groupBox1->Margin = System::Windows::Forms::Padding(4);
 			this->groupBox1->Name = L"groupBox1";
-			this->groupBox1->Padding = System::Windows::Forms::Padding(4, 4, 4, 4);
-			this->groupBox1->Size = System::Drawing::Size(340, 143);
+			this->groupBox1->Padding = System::Windows::Forms::Padding(4);
+			this->groupBox1->Size = System::Drawing::Size(340, 178);
 			this->groupBox1->TabIndex = 2;
 			this->groupBox1->TabStop = false;
-			this->groupBox1->Text = L"groupBox1";
+			this->groupBox1->Text = L"Replace";
 			// 
 			// label1
 			// 
@@ -185,7 +202,7 @@ namespace namechanger {
 			// button1
 			// 
 			this->button1->Location = System::Drawing::Point(852, 659);
-			this->button1->Margin = System::Windows::Forms::Padding(4, 4, 4, 4);
+			this->button1->Margin = System::Windows::Forms::Padding(4);
 			this->button1->Name = L"button1";
 			this->button1->Size = System::Drawing::Size(268, 40);
 			this->button1->TabIndex = 5;
@@ -193,12 +210,54 @@ namespace namechanger {
 			this->button1->UseVisualStyleBackColor = true;
 			this->button1->Click += gcnew System::EventHandler(this, &Form1::button1_Click);
 			// 
+			// label3
+			// 
+			this->label3->AutoSize = true;
+			this->label3->Location = System::Drawing::Point(7, 30);
+			this->label3->Name = L"label3";
+			this->label3->Size = System::Drawing::Size(98, 17);
+			this->label3->TabIndex = 0;
+			this->label3->Text = L"Find what:";
+			// 
+			// label4
+			// 
+			this->label4->AutoSize = true;
+			this->label4->Location = System::Drawing::Point(7, 87);
+			this->label4->Name = L"label4";
+			this->label4->Size = System::Drawing::Size(125, 17);
+			this->label4->TabIndex = 1;
+			this->label4->Text = L"Replace with:";
+			// 
+			// textBox1
+			// 
+			this->textBox1->Location = System::Drawing::Point(10, 50);
+			this->textBox1->Name = L"textBox1";
+			this->textBox1->Size = System::Drawing::Size(323, 24);
+			this->textBox1->TabIndex = 2;
+			// 
+			// textBox2
+			// 
+			this->textBox2->Location = System::Drawing::Point(10, 107);
+			this->textBox2->Name = L"textBox2";
+			this->textBox2->Size = System::Drawing::Size(323, 24);
+			this->textBox2->TabIndex = 3;
+			// 
+			// button2
+			// 
+			this->button2->Location = System::Drawing::Point(204, 147);
+			this->button2->Name = L"button2";
+			this->button2->Size = System::Drawing::Size(129, 24);
+			this->button2->TabIndex = 4;
+			this->button2->Text = L"Replace all";
+			this->button2->UseVisualStyleBackColor = true;
+			this->button2->Click += gcnew System::EventHandler(this, &Form1::button2_Click);
+			// 
 			// Form1
 			// 
 			this->AllowDrop = true;
 			this->AutoScaleDimensions = System::Drawing::SizeF(9, 17);
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
-			this->ClientSize = System::Drawing::Size(1308, 715);
+			this->ClientSize = System::Drawing::Size(1308, 744);
 			this->Controls->Add(this->button1);
 			this->Controls->Add(this->label2);
 			this->Controls->Add(this->label1);
@@ -207,10 +266,12 @@ namespace namechanger {
 			this->Controls->Add(this->richTextBox1);
 			this->Font = (gcnew System::Drawing::Font(L"Courier New", 11.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point, 
 				static_cast<System::Byte>(0)));
-			this->Margin = System::Windows::Forms::Padding(4, 4, 4, 4);
+			this->Margin = System::Windows::Forms::Padding(4);
 			this->Name = L"Form1";
 			this->Text = L"Form1";
 			this->Load += gcnew System::EventHandler(this, &Form1::Form1_Load);
+			this->groupBox1->ResumeLayout(false);
+			this->groupBox1->PerformLayout();
 			this->ResumeLayout(false);
 			this->PerformLayout();
 
@@ -450,6 +511,18 @@ namespace namechanger {
 			}
 	private: System::Void button1_Click(System::Object^  sender, System::EventArgs^  e) {
 			 }
+
+/// \brief Replace all
+private: System::Void button2_Click(System::Object^  sender, System::EventArgs^  e) {
+			 std::string src = to_string( richTextBox2->Text );
+			 std::string dest = src;
+			 boost::replace_all( dest, to_string(textBox1->Text), to_string(textBox2->Text) );
+
+			 LOG_PRINT( "Replace all - src: "  + src );
+			 LOG_PRINT( "Replace all - dest: " + dest );
+
+			 richTextBox2->Text = ::ToString( dest );
+		 }
 };
 }
 

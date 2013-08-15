@@ -6,6 +6,7 @@
 #include "diff_match_patch.h"
 #include "log/DefaultLog.hpp"
 #include "log/StringAux.hpp"
+#include "boost_filesystem.hpp"
 
 using namespace amorphous;
 
@@ -67,6 +68,20 @@ public:
 		for( size_t i=0; i<edit_info.size(); i++ )
 		{
 			CompareSourceAndDestLeavesPair( edit_info[i] );
+		}
+	}
+
+	void ExecuteRenames()
+	{
+		for( size_t i=0; i<edit_info.size(); i++ )
+		{
+			if( edit_info[i].from_leaf == edit_info[i].to_leaf )
+				continue;
+
+			std::string parent_path = get_parent_path( edit_info[i].orig_pathname );
+			std::string dest_pathname = concatenate_paths( parent_path, edit_info[i].to_leaf );
+
+			rename_path( edit_info[i].orig_pathname, dest_pathname );
 		}
 	}
 };

@@ -104,6 +104,7 @@ namespace namechanger {
 	private: System::Windows::Forms::GroupBox^  groupBox1;
 	private: System::Windows::Forms::Label^  label1;
 	private: System::Windows::Forms::Label^  label2;
+	private: System::Windows::Forms::Button^  button1;
 
 	protected: 
 
@@ -125,33 +126,38 @@ namespace namechanger {
 			this->groupBox1 = (gcnew System::Windows::Forms::GroupBox());
 			this->label1 = (gcnew System::Windows::Forms::Label());
 			this->label2 = (gcnew System::Windows::Forms::Label());
+			this->button1 = (gcnew System::Windows::Forms::Button());
 			this->SuspendLayout();
 			// 
 			// richTextBox1
 			// 
 			this->richTextBox1->EnableAutoDragDrop = true;
-			this->richTextBox1->Location = System::Drawing::Point(32, 32);
+			this->richTextBox1->Location = System::Drawing::Point(48, 45);
+			this->richTextBox1->Margin = System::Windows::Forms::Padding(4, 4, 4, 4);
 			this->richTextBox1->Name = L"richTextBox1";
 			this->richTextBox1->ReadOnly = true;
-			this->richTextBox1->Size = System::Drawing::Size(335, 341);
+			this->richTextBox1->Size = System::Drawing::Size(500, 481);
 			this->richTextBox1->TabIndex = 0;
 			this->richTextBox1->Text = L"abcde\nxyz\n12345";
 			this->richTextBox1->TextChanged += gcnew System::EventHandler(this, &Form1::richTextBox1_TextChanged);
 			// 
 			// richTextBox2
 			// 
-			this->richTextBox2->Location = System::Drawing::Point(392, 32);
+			this->richTextBox2->Location = System::Drawing::Point(588, 45);
+			this->richTextBox2->Margin = System::Windows::Forms::Padding(4, 4, 4, 4);
 			this->richTextBox2->Name = L"richTextBox2";
-			this->richTextBox2->Size = System::Drawing::Size(355, 340);
+			this->richTextBox2->Size = System::Drawing::Size(530, 480);
 			this->richTextBox2->TabIndex = 1;
 			this->richTextBox2->Text = L"";
 			this->richTextBox2->TextChanged += gcnew System::EventHandler(this, &Form1::richTextBox2_TextChanged);
 			// 
 			// groupBox1
 			// 
-			this->groupBox1->Location = System::Drawing::Point(32, 392);
+			this->groupBox1->Location = System::Drawing::Point(48, 555);
+			this->groupBox1->Margin = System::Windows::Forms::Padding(4, 4, 4, 4);
 			this->groupBox1->Name = L"groupBox1";
-			this->groupBox1->Size = System::Drawing::Size(227, 101);
+			this->groupBox1->Padding = System::Windows::Forms::Padding(4, 4, 4, 4);
+			this->groupBox1->Size = System::Drawing::Size(340, 143);
 			this->groupBox1->TabIndex = 2;
 			this->groupBox1->TabStop = false;
 			this->groupBox1->Text = L"groupBox1";
@@ -159,32 +165,49 @@ namespace namechanger {
 			// label1
 			// 
 			this->label1->AutoSize = true;
-			this->label1->Location = System::Drawing::Point(834, 9);
+			this->label1->Location = System::Drawing::Point(1251, 13);
+			this->label1->Margin = System::Windows::Forms::Padding(4, 0, 4, 0);
 			this->label1->Name = L"label1";
-			this->label1->Size = System::Drawing::Size(35, 12);
+			this->label1->Size = System::Drawing::Size(62, 17);
 			this->label1->TabIndex = 3;
 			this->label1->Text = L"label1";
 			// 
 			// label2
 			// 
 			this->label2->AutoSize = true;
-			this->label2->Location = System::Drawing::Point(32, 14);
+			this->label2->Location = System::Drawing::Point(48, 20);
+			this->label2->Margin = System::Windows::Forms::Padding(4, 0, 4, 0);
 			this->label2->Name = L"label2";
-			this->label2->Size = System::Drawing::Size(35, 12);
+			this->label2->Size = System::Drawing::Size(62, 17);
 			this->label2->TabIndex = 4;
 			this->label2->Text = L"label2";
+			// 
+			// button1
+			// 
+			this->button1->Location = System::Drawing::Point(852, 659);
+			this->button1->Margin = System::Windows::Forms::Padding(4, 4, 4, 4);
+			this->button1->Name = L"button1";
+			this->button1->Size = System::Drawing::Size(268, 40);
+			this->button1->TabIndex = 5;
+			this->button1->Text = L"Rename";
+			this->button1->UseVisualStyleBackColor = true;
+			this->button1->Click += gcnew System::EventHandler(this, &Form1::button1_Click);
 			// 
 			// Form1
 			// 
 			this->AllowDrop = true;
-			this->AutoScaleDimensions = System::Drawing::SizeF(6, 12);
+			this->AutoScaleDimensions = System::Drawing::SizeF(9, 17);
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
-			this->ClientSize = System::Drawing::Size(872, 505);
+			this->ClientSize = System::Drawing::Size(1308, 715);
+			this->Controls->Add(this->button1);
 			this->Controls->Add(this->label2);
 			this->Controls->Add(this->label1);
 			this->Controls->Add(this->groupBox1);
 			this->Controls->Add(this->richTextBox2);
 			this->Controls->Add(this->richTextBox1);
+			this->Font = (gcnew System::Drawing::Font(L"Courier New", 11.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point, 
+				static_cast<System::Byte>(0)));
+			this->Margin = System::Windows::Forms::Padding(4, 4, 4, 4);
 			this->Name = L"Form1";
 			this->Text = L"Form1";
 			this->Load += gcnew System::EventHandler(this, &Form1::Form1_Load);
@@ -209,6 +232,20 @@ namespace namechanger {
 					character_offsets[i] = offsets_sum;
 					offsets_sum += edit_info[i].to_leaf.length() + 1;
 				}
+
+				const int ss1 = richTextBox1->SelectionStart;
+				const int ss2 = richTextBox2->SelectionStart;
+				const int sl1 = richTextBox1->SelectionLength;
+				const int sl2 = richTextBox2->SelectionLength;
+
+				richTextBox1->SelectionStart      = 0;
+				richTextBox2->SelectionStart      = 0;
+				richTextBox1->SelectionLength     = richTextBox1->Text->Length;
+				richTextBox2->SelectionLength     = richTextBox2->Text->Length;
+				richTextBox1->SelectionColor      = Color::Black;
+				richTextBox2->SelectionColor      = Color::Black;
+				richTextBox1->SelectionBackColor  = Color::White;
+				richTextBox2->SelectionBackColor  = Color::White;
 
 				for( size_t i=0; i<edit_info.size(); i++ )
 				{
@@ -245,6 +282,11 @@ namespace namechanger {
 						diff_offset += diff.text.length();
 					}
 				}
+
+				richTextBox1->SelectionStart  = ss1;
+				richTextBox2->SelectionStart  = ss2;
+				richTextBox1->SelectionLength = sl1;
+				richTextBox2->SelectionLength = sl2;
 			 }
 
 	private: System::Void richTextBox1_TextChanged(System::Object^  sender, System::EventArgs^  e) {
@@ -406,6 +448,8 @@ namespace namechanger {
 
 				Form1_PrintEventInfo( sender, e );
 			}
-	};
+	private: System::Void button1_Click(System::Object^  sender, System::EventArgs^  e) {
+			 }
+};
 }
 

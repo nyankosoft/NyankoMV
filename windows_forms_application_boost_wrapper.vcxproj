@@ -81,9 +81,19 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\namechanger\boost_filesystem.cpp" />
+    <ClCompile Include="log\LogInputBase.cpp" />
+    <ClCompile Include="log\LogOutput.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\namechanger\boost_filesystem.hpp" />
+    <ClInclude Include="log\DefaultLog.hpp" />
+    <ClInclude Include="log\Log.hpp" />
+    <ClInclude Include="log\LogInputBase.hpp" />
+    <ClInclude Include="log\LogOutput.hpp" />
+    <ClInclude Include="log\LogOutputBase.hpp" />
+    <ClInclude Include="log\SafeDelete.hpp" />
+    <ClInclude Include="log\TimeFormats.hpp" />
+    <ClInclude Include="log\time_string.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

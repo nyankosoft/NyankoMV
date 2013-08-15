@@ -2,13 +2,21 @@
 
 #include "stdafx.h"
 #include "Form1.h"
+#include "log/LogOutput.hpp"
 
 using namespace namechanger;
+
+
+FilenameEditInfoContainer g_FilenameEditInfoContainer;
+
 
 [STAThreadAttribute]
 int main(array<System::String ^> ^args)
 {
-	MessageBox::Show( "Starting the application...", "Starting", MessageBoxButtons::OK );
+//	MessageBox::Show( "Starting the application...", "Starting", MessageBoxButtons::OK );
+
+	LogOutput_HTML html_log( "log.html" );
+	GlobalLog().AddLogOutput( &html_log );
 
 	// Enabling Windows XP visual effects before any controls are created
 	Application::EnableVisualStyles();

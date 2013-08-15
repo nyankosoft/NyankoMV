@@ -13,15 +13,48 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Source Files\log">
+      <UniqueIdentifier>{6c4db90f-8be8-4083-bf24-35ff23968c25}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\namechanger\boost_filesystem.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="log\LogInputBase.cpp">
+      <Filter>Source Files\log</Filter>
+    </ClCompile>
+    <ClCompile Include="log\LogOutput.cpp">
+      <Filter>Source Files\log</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\namechanger\boost_filesystem.hpp">
       <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="log\DefaultLog.hpp">
+      <Filter>Source Files\log</Filter>
+    </ClInclude>
+    <ClInclude Include="log\Log.hpp">
+      <Filter>Source Files\log</Filter>
+    </ClInclude>
+    <ClInclude Include="log\LogInputBase.hpp">
+      <Filter>Source Files\log</Filter>
+    </ClInclude>
+    <ClInclude Include="log\LogOutput.hpp">
+      <Filter>Source Files\log</Filter>
+    </ClInclude>
+    <ClInclude Include="log\LogOutputBase.hpp">
+      <Filter>Source Files\log</Filter>
+    </ClInclude>
+    <ClInclude Include="log\SafeDelete.hpp">
+      <Filter>Source Files\log</Filter>
+    </ClInclude>
+    <ClInclude Include="log\time_string.hpp">
+      <Filter>Source Files\log</Filter>
+    </ClInclude>
+    <ClInclude Include="log\TimeFormats.hpp">
+      <Filter>Source Files\log</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

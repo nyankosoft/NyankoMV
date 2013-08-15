@@ -3,6 +3,10 @@
 
 #include <string>
 #include <vector>
+
+#include <msclr/marshal_cppstd.h>
+using namespace msclr::interop;
+
 //#include <boost/filesystem.hpp> // The app fails to start when this is included
 
 //#pragma managed(push, off)
@@ -13,12 +17,13 @@
 //#include "boost_filesystem.hpp"
 //#pragma managed(pop)
 
-
+#include "FilenameEditInfo.hpp"
 #include "boost_filesystem.hpp"
+#include "log/DefaultLog.hpp"
+#include "log/StringAux.hpp"
 
-#include <msclr/marshal_cppstd.h>
+using namespace amorphous;
 
-using namespace msclr::interop;
 
 
 #ifdef _DEBUG
@@ -41,18 +46,6 @@ std::string to_string( System::String^ src )
 }
 
 
-class FilenameEditInfo
-{
-public:
-	FilenameEditInfo(){}
-	~FilenameEditInfo(){}
-
-	std::string orig_pathname;
-
-	std::string to_leaf;
-};
-
-
 
 namespace namechanger {
 
@@ -68,6 +61,9 @@ namespace namechanger {
 	/// </summary>
 	public ref class Form1 : public System::Windows::Forms::Form
 	{
+
+//	private: FilenameEditInfoContainer^  editInfoContainer; // FilenameEditInfoContainer must be a 'public ref class'
+
 	public:
 		Form1(void)
 		{
@@ -136,6 +132,7 @@ namespace namechanger {
 			this->richTextBox1->EnableAutoDragDrop = true;
 			this->richTextBox1->Location = System::Drawing::Point(32, 32);
 			this->richTextBox1->Name = L"richTextBox1";
+			this->richTextBox1->ReadOnly = true;
 			this->richTextBox1->Size = System::Drawing::Size(335, 341);
 			this->richTextBox1->TabIndex = 0;
 			this->richTextBox1->Text = L"abcde\nxyz\n12345";
@@ -196,9 +193,103 @@ namespace namechanger {
 
 		}
 #pragma endregion
+
+	private: void UpdateTextColors()
+			 {
+				typedef diff_match_patch<std::wstring> dmp;
+				typedef dmp::Diffs diff_list;
+
+				std::vector<FilenameEditInfo>& edit_info = g_FilenameEditInfoContainer.edit_info;
+
+				std::vector<int> character_offsets;
+				character_offsets.resize( edit_info.size(), 0 );
+				int offsets_sum = 0;
+				for( size_t i=0; i<edit_info.size(); i++ )
+				{
+					character_offsets[i] = offsets_sum;
+					offsets_sum += edit_info[i].to_leaf.length() + 1;
+				}
+
+				for( size_t i=0; i<edit_info.size(); i++ )
+				{
+					int diff_offset = 0;
+					diff_list& diffs = edit_info[i].diffs;
+					for( diff_list::const_iterator itr = diffs.begin(); itr != diffs.end(); itr++ )
+//					for( size_t j=0; j<edit_info[i].diffs.size(); j++ )
+					{
+						const dmp::Diff& diff = *itr;
+
+						switch( diff.operation )
+						{
+						case dmp::DIFF_DELETE:
+							richTextBox1->SelectionStart = character_offsets[i] + diff_offset;
+							richTextBox1->SelectionLength = diff.text.size();
+//							richTextBox1->SelectionFont=fnt;
+							richTextBox1->SelectionColor     = Color::Red;
+							richTextBox1->SelectionBackColor = Color::Pink;
+							break;
+						case dmp::DIFF_INSERT:
+							richTextBox2->SelectionStart = character_offsets[i] + diff_offset;
+							richTextBox2->SelectionLength = diff.text.size();
+//							richTextBox2->SelectionFont=fnt;
+							richTextBox2->SelectionColor     = Color::Red;
+							richTextBox2->SelectionBackColor = Color::Pink;
+							break;
+						case dmp::DIFF_EQUAL:
+							break;
+						default:
+							LOG_PRINTF_ERROR(( "An unsupported diff type: %d", (int)diff.operation ));
+							break;
+						}
+
+						diff_offset += diff.text.length();
+					}
+				}
+			 }
+
 	private: System::Void richTextBox1_TextChanged(System::Object^  sender, System::EventArgs^  e) {
 			 }
 	private: System::Void richTextBox2_TextChanged(System::Object^  sender, System::EventArgs^  e) {
+
+				 std::vector<std::string> lines;
+
+				 std::string text = to_string( richTextBox2->Text );
+				 LOG_PRINTF(( "richTextBox2->Text (converted to std::string): %s", text.c_str() ));
+				 break_into_lines( text, lines );
+
+//				 array<String^> array_of_string = richTextBox2->Lines;
+				 Array^ text_box_lines = richTextBox2->Lines;
+				 lines.resize( 0 );
+				 lines.resize( text_box_lines->Length );
+				 LOG_PRINTF(( "richTextBox2->Lines->Length %d", text_box_lines->Length ));
+				 for( int i=0; i<text_box_lines->Length; i++ )
+				 {
+					 Object ^obj = text_box_lines->GetValue(i);
+					 String ^line = obj->ToString();
+					 LOG_PRINTF(( "line[%d]: %s", i, to_string(line).c_str() ));
+
+					 lines[i] = to_string( line );
+				 }
+
+				 if( 2 <= lines.size() && lines.back() == "" )
+					 lines.erase( lines.end() - 1 );
+
+				 std::vector<FilenameEditInfo>& edit_info = g_FilenameEditInfoContainer.edit_info;
+
+				 LOG_PRINTF(( "edit_info.size(): %d, lines.size(): %d", (int)edit_info.size(), (int)lines.size() ));
+
+				 g_FilenameEditInfoContainer.ClearDestLeaves();
+				 if( edit_info.size() < lines.size() )
+					 edit_info.insert( edit_info.end(), lines.size() - edit_info.size(), FilenameEditInfo() );
+
+				 // Each line in lines represents an i-th destintion filename
+
+				 for( size_t i=0; i<lines.size(); i++ )
+					 edit_info[i].to_leaf = lines[i];
+
+				 g_FilenameEditInfoContainer.CompareSourceAndDestLeaves();
+
+				 UpdateTextColors();
 			 }
 	private: System::Void Form1_Load(System::Object^  sender, System::EventArgs^  e) {
 			 }
@@ -275,25 +366,39 @@ namespace namechanger {
 
 //				String^ obj_str = file_drop_object->ToString();
 
-				String^ obj_str = "";
-				std::vector<FilenameEditInfo> edit_info;
+				std::vector<FilenameEditInfo>& edit_info = g_FilenameEditInfoContainer.edit_info;
 				edit_info.resize( file_drop_object_array->Length );
 				for( int i=0; i<file_drop_object_array->Length; i++ )
 				{
 					Object^ obj = file_drop_object_array->GetValue(i);
-//					edit_info[i].orig_pathname = to_string( obj->ToString() );
+					edit_info[i].orig_pathname = to_string( obj->ToString() );
+
+					edit_info[i].from_leaf = get_leaf( edit_info[i].orig_pathname );
 
 //					obj_str += obj->ToString() + "\n";
-					obj_str += ::ToString( get_leaf( edit_info[i].orig_pathname ) );
 				}
 
-				MessageBox::Show(
-					obj_str,// + "\n" + dropped_objects_string,
-					"DragDrop: " + num_items,
-					MessageBoxButtons::OK
-					);
+				// Create text for the text buffer
+				String^ obj_str = "";
+				this->richTextBox1->Clear();
+				this->richTextBox2->Clear();
+				for( size_t i=0; i<edit_info.size(); i++ )
+				{
+					obj_str += ::ToString( edit_info[i].from_leaf ) + L"\n";
+					this->richTextBox1->Text += ::ToString( edit_info[i].from_leaf ) + Environment::NewLine;
+					this->richTextBox2->Text += ::ToString( edit_info[i].from_leaf ) + Environment::NewLine;
+				}
 
-				richTextBox1->Text = "";
+//				this->richTextBox1->Text = obj_str;
+//				this->richTextBox2->Text = obj_str;
+
+//				MessageBox::Show(
+//					obj_str,// + "\n" + dropped_objects_string,
+//					"DragDrop: " + num_items,
+//					MessageBoxButtons::OK
+//					);
+
+//				richTextBox1->Text = "";
 //				for( size_t i=0; i<pathnames.size(); i++ )
 //				{
 //					richTextBox1->Text += ::ToString( pathnames[i].leaf().string() );

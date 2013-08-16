@@ -111,6 +111,7 @@ namespace namechanger {
 	private: System::Windows::Forms::TextBox^  textBox1;
 	private: System::Windows::Forms::Label^  label4;
 	private: System::Windows::Forms::Button^  button2;
+	private: System::Windows::Forms::Label^  label5;
 
 	protected: 
 
@@ -130,14 +131,15 @@ namespace namechanger {
 			this->richTextBox1 = (gcnew System::Windows::Forms::RichTextBox());
 			this->richTextBox2 = (gcnew System::Windows::Forms::RichTextBox());
 			this->groupBox1 = (gcnew System::Windows::Forms::GroupBox());
+			this->button2 = (gcnew System::Windows::Forms::Button());
+			this->textBox2 = (gcnew System::Windows::Forms::TextBox());
+			this->textBox1 = (gcnew System::Windows::Forms::TextBox());
+			this->label4 = (gcnew System::Windows::Forms::Label());
+			this->label3 = (gcnew System::Windows::Forms::Label());
 			this->label1 = (gcnew System::Windows::Forms::Label());
 			this->label2 = (gcnew System::Windows::Forms::Label());
 			this->button1 = (gcnew System::Windows::Forms::Button());
-			this->label3 = (gcnew System::Windows::Forms::Label());
-			this->label4 = (gcnew System::Windows::Forms::Label());
-			this->textBox1 = (gcnew System::Windows::Forms::TextBox());
-			this->textBox2 = (gcnew System::Windows::Forms::TextBox());
-			this->button2 = (gcnew System::Windows::Forms::Button());
+			this->label5 = (gcnew System::Windows::Forms::Label());
 			this->groupBox1->SuspendLayout();
 			this->SuspendLayout();
 			// 
@@ -150,7 +152,7 @@ namespace namechanger {
 			this->richTextBox1->ReadOnly = true;
 			this->richTextBox1->Size = System::Drawing::Size(500, 481);
 			this->richTextBox1->TabIndex = 0;
-			this->richTextBox1->Text = L"abcde\nxyz\n12345";
+			this->richTextBox1->Text = L"";
 			this->richTextBox1->TextChanged += gcnew System::EventHandler(this, &Form1::richTextBox1_TextChanged);
 			// 
 			// richTextBox2
@@ -179,6 +181,48 @@ namespace namechanger {
 			this->groupBox1->TabStop = false;
 			this->groupBox1->Text = L"Replace";
 			// 
+			// button2
+			// 
+			this->button2->Location = System::Drawing::Point(204, 147);
+			this->button2->Name = L"button2";
+			this->button2->Size = System::Drawing::Size(129, 24);
+			this->button2->TabIndex = 4;
+			this->button2->Text = L"Replace all";
+			this->button2->UseVisualStyleBackColor = true;
+			this->button2->Click += gcnew System::EventHandler(this, &Form1::button2_Click);
+			// 
+			// textBox2
+			// 
+			this->textBox2->Location = System::Drawing::Point(10, 107);
+			this->textBox2->Name = L"textBox2";
+			this->textBox2->Size = System::Drawing::Size(323, 24);
+			this->textBox2->TabIndex = 3;
+			// 
+			// textBox1
+			// 
+			this->textBox1->Location = System::Drawing::Point(10, 50);
+			this->textBox1->Name = L"textBox1";
+			this->textBox1->Size = System::Drawing::Size(323, 24);
+			this->textBox1->TabIndex = 2;
+			// 
+			// label4
+			// 
+			this->label4->AutoSize = true;
+			this->label4->Location = System::Drawing::Point(7, 87);
+			this->label4->Name = L"label4";
+			this->label4->Size = System::Drawing::Size(125, 17);
+			this->label4->TabIndex = 1;
+			this->label4->Text = L"Replace with:";
+			// 
+			// label3
+			// 
+			this->label3->AutoSize = true;
+			this->label3->Location = System::Drawing::Point(7, 30);
+			this->label3->Name = L"label3";
+			this->label3->Size = System::Drawing::Size(98, 17);
+			this->label3->TabIndex = 0;
+			this->label3->Text = L"Find what:";
+			// 
 			// label1
 			// 
 			this->label1->AutoSize = true;
@@ -195,9 +239,9 @@ namespace namechanger {
 			this->label2->Location = System::Drawing::Point(48, 20);
 			this->label2->Margin = System::Windows::Forms::Padding(4, 0, 4, 0);
 			this->label2->Name = L"label2";
-			this->label2->Size = System::Drawing::Size(62, 17);
+			this->label2->Size = System::Drawing::Size(170, 17);
 			this->label2->TabIndex = 4;
-			this->label2->Text = L"label2";
+			this->label2->Text = L"Original filenames";
 			// 
 			// button1
 			// 
@@ -210,47 +254,14 @@ namespace namechanger {
 			this->button1->UseVisualStyleBackColor = true;
 			this->button1->Click += gcnew System::EventHandler(this, &Form1::button1_Click);
 			// 
-			// label3
+			// label5
 			// 
-			this->label3->AutoSize = true;
-			this->label3->Location = System::Drawing::Point(7, 30);
-			this->label3->Name = L"label3";
-			this->label3->Size = System::Drawing::Size(98, 17);
-			this->label3->TabIndex = 0;
-			this->label3->Text = L"Find what:";
-			// 
-			// label4
-			// 
-			this->label4->AutoSize = true;
-			this->label4->Location = System::Drawing::Point(7, 87);
-			this->label4->Name = L"label4";
-			this->label4->Size = System::Drawing::Size(125, 17);
-			this->label4->TabIndex = 1;
-			this->label4->Text = L"Replace with:";
-			// 
-			// textBox1
-			// 
-			this->textBox1->Location = System::Drawing::Point(10, 50);
-			this->textBox1->Name = L"textBox1";
-			this->textBox1->Size = System::Drawing::Size(323, 24);
-			this->textBox1->TabIndex = 2;
-			// 
-			// textBox2
-			// 
-			this->textBox2->Location = System::Drawing::Point(10, 107);
-			this->textBox2->Name = L"textBox2";
-			this->textBox2->Size = System::Drawing::Size(323, 24);
-			this->textBox2->TabIndex = 3;
-			// 
-			// button2
-			// 
-			this->button2->Location = System::Drawing::Point(204, 147);
-			this->button2->Name = L"button2";
-			this->button2->Size = System::Drawing::Size(129, 24);
-			this->button2->TabIndex = 4;
-			this->button2->Text = L"Replace all";
-			this->button2->UseVisualStyleBackColor = true;
-			this->button2->Click += gcnew System::EventHandler(this, &Form1::button2_Click);
+			this->label5->AutoSize = true;
+			this->label5->Location = System::Drawing::Point(588, 20);
+			this->label5->Name = L"label5";
+			this->label5->Size = System::Drawing::Size(62, 17);
+			this->label5->TabIndex = 6;
+			this->label5->Text = L"Prevew";
 			// 
 			// Form1
 			// 
@@ -258,6 +269,7 @@ namespace namechanger {
 			this->AutoScaleDimensions = System::Drawing::SizeF(9, 17);
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
 			this->ClientSize = System::Drawing::Size(1308, 744);
+			this->Controls->Add(this->label5);
 			this->Controls->Add(this->button1);
 			this->Controls->Add(this->label2);
 			this->Controls->Add(this->label1);
@@ -510,6 +522,8 @@ namespace namechanger {
 				Form1_PrintEventInfo( sender, e );
 			}
 	private: System::Void button1_Click(System::Object^  sender, System::EventArgs^  e) {
+
+				 g_FilenameEditInfoContainer.ExecuteRenames();
 			 }
 
 /// \brief Replace all

@@ -3,12 +3,27 @@
 
 #include <string>
 #include <vector>
+#include <boost/algorithm/string/replace.hpp>
 #include "diff_match_patch.h"
 #include "log/DefaultLog.hpp"
 #include "log/StringAux.hpp"
 #include "boost_filesystem.hpp"
 
 using namespace amorphous;
+
+
+inline unsigned int delete_reserved_characters( std::string& text )
+{
+	size_t orig_length = text.length();
+
+	const char *reserved[] = {"*","?",":","|","/","\\","\"","<",">",""};
+	for( int i=0; i<sizeof(reserved)/sizeof(reserved[0]); i++ )
+	{
+		 boost::replace_all( text, reserved[i], "" ); // i.e. delete all the occurrences
+	}
+
+	return (unsigned int)( orig_length - text.length() );
+}
 
 
 class FilenameEditInfo
@@ -83,6 +98,30 @@ public:
 
 			rename_path( edit_info[i].orig_pathname, dest_pathname );
 		}
+	}
+
+	bool UpdateDestLeaves( const std::vector<std::string>& lines )
+	{
+		ClearDestLeaves();
+
+		if( edit_info.size() < lines.size() )
+			edit_info.insert( edit_info.end(), lines.size() - edit_info.size(), FilenameEditInfo() );
+
+		// Each line in lines represents an i-th destintion filename
+
+		bool need_to_update_dest_buffer = false;
+		for( size_t i=0; i<lines.size(); i++ )
+		{
+			std::string line = lines[i];
+			if( 0 < delete_reserved_characters( line ) )
+				need_to_update_dest_buffer = true;
+
+			edit_info[i].to_leaf = line;
+		}
+
+		CompareSourceAndDestLeaves();
+
+		return need_to_update_dest_buffer;
 	}
 };
 

@@ -21,7 +21,6 @@ using namespace msclr::interop;
 #include "boost_filesystem.hpp"
 #include "log/DefaultLog.hpp"
 #include "log/StringAux.hpp"
-#include <boost/algorithm/string/replace.hpp>
 
 using namespace amorphous;
 
@@ -204,6 +203,7 @@ namespace namechanger {
 			this->textBox1->Name = L"textBox1";
 			this->textBox1->Size = System::Drawing::Size(323, 24);
 			this->textBox1->TabIndex = 2;
+			this->textBox1->TextChanged += gcnew System::EventHandler(this, &Form1::textBox1_TextChanged);
 			// 
 			// label4
 			// 
@@ -268,7 +268,7 @@ namespace namechanger {
 			this->AllowDrop = true;
 			this->AutoScaleDimensions = System::Drawing::SizeF(9, 17);
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
-			this->ClientSize = System::Drawing::Size(1308, 744);
+			this->ClientSize = System::Drawing::Size(1276, 744);
 			this->Controls->Add(this->label5);
 			this->Controls->Add(this->button1);
 			this->Controls->Add(this->label2);
@@ -389,20 +389,27 @@ namespace namechanger {
 				 if( 2 <= lines.size() && lines.back() == "" )
 					 lines.erase( lines.end() - 1 );
 
-				 std::vector<FilenameEditInfo>& edit_info = g_FilenameEditInfoContainer.edit_info;
+				 // Update the dest filenames
+				 // When reserved characters are present in the dest buffer,
+				 // they are deleted and UpdateDestLeaves() returns true.
+				 bool need_to_update_dest_buffer
+					 = g_FilenameEditInfoContainer.UpdateDestLeaves( lines );
+
+				 const std::vector<FilenameEditInfo>& edit_info = g_FilenameEditInfoContainer.edit_info;
+				 if( need_to_update_dest_buffer )
+				 {
+					 //const int ss2 = richTextBox2->SelectionStart;
+					 //const int sl2 = richTextBox2->SelectionLength;
+					 this->richTextBox2->Clear();
+					 for( size_t i=0; i<edit_info.size(); i++ )
+					 {
+						 this->richTextBox2->Text += ::ToString(edit_info[i].to_leaf + "\n");
+					 }
+					 //richTextBox2->SelectionStart  = ss2;
+					 //richTextBox2->SelectionLength = sl2;
+				 }
 
 				 LOG_PRINTF(( "edit_info.size(): %d, lines.size(): %d", (int)edit_info.size(), (int)lines.size() ));
-
-				 g_FilenameEditInfoContainer.ClearDestLeaves();
-				 if( edit_info.size() < lines.size() )
-					 edit_info.insert( edit_info.end(), lines.size() - edit_info.size(), FilenameEditInfo() );
-
-				 // Each line in lines represents an i-th destintion filename
-
-				 for( size_t i=0; i<lines.size(); i++ )
-					 edit_info[i].to_leaf = lines[i];
-
-				 g_FilenameEditInfoContainer.CompareSourceAndDestLeaves();
 
 				 UpdateTextColors();
 			 }
@@ -536,6 +543,31 @@ private: System::Void button2_Click(System::Object^  sender, System::EventArgs^ 
 			 LOG_PRINT( "Replace all - dest: " + dest );
 
 			 richTextBox2->Text = ::ToString( dest );
+		 }
+
+		 // Error C4485: matches base ref class method 'System::Windows::Forms::Form::ProcessCmdKey',
+		 // but is not marked 'new' or 'override'; 'new' (and 'virtual') is assumed
+//		 protected: virtual bool ProcessCmdKey(Message %msg, Keys keyData)
+//		 {
+//			 return System::Windows::Forms::Form::ProcessCmdKey(msg,keyData);
+//		 }
+private: System::Void textBox1_TextChanged(System::Object^  sender, System::EventArgs^  e) {
+			 std::string text = to_string(textBox1->Text);
+			 unsigned int num_deleted_chars = delete_reserved_characters( text );
+			 if( 0 < num_deleted_chars )
+			 {
+				 int ss = textBox1->SelectionStart;
+
+				 textBox1->Text = ::ToString( text );
+
+				 if( num_deleted_chars == 1 )
+				 {
+					 // Deleted a single reserved character - the user is probably
+					 // entering the text in the text box (i.e. not pasting from clipboard).
+					 if( 0 < ss )
+						 textBox1->SelectionStart = ss - 1;
+				 }
+			 }
 		 }
 };
 }

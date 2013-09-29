@@ -100,6 +100,7 @@ public:
 		}
 	}
 
+	/// Updates 'to_leaf' of each pathname edit information.
 	bool UpdateDestLeaves( const std::vector<std::string>& lines )
 	{
 		ClearDestLeaves();

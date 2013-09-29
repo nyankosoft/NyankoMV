@@ -297,13 +297,16 @@ namespace namechanger {
 
 				std::vector<FilenameEditInfo>& edit_info = g_FilenameEditInfoContainer.edit_info;
 
-				std::vector<int> character_offsets;
-				character_offsets.resize( edit_info.size(), 0 );
-				int offsets_sum = 0;
+				std::vector<int> character_offsets_left, character_offsets_right;
+				character_offsets_left.resize( edit_info.size(), 0 );
+				character_offsets_right.resize( edit_info.size(), 0 );
+				int offsets_sum_left = 0, offsets_sum_right = 0;
 				for( size_t i=0; i<edit_info.size(); i++ )
 				{
-					character_offsets[i] = offsets_sum;
-					offsets_sum += edit_info[i].to_leaf.length() + 1;
+					character_offsets_left[i] = offsets_sum_left;
+					offsets_sum_left += edit_info[i].from_leaf.length() + 1;
+					character_offsets_right[i] = offsets_sum_right;
+					offsets_sum_right += edit_info[i].to_leaf.length() + 1;
 				}
 
 				const int ss1 = richTextBox1->SelectionStart;
@@ -323,6 +326,7 @@ namespace namechanger {
 				for( size_t i=0; i<edit_info.size(); i++ )
 				{
 					int diff_offset = 0;
+					int diff_offset_left = 0, diff_offset_right = 0;
 					diff_list& diffs = edit_info[i].diffs;
 					for( diff_list::const_iterator itr = diffs.begin(); itr != diffs.end(); itr++ )
 //					for( size_t j=0; j<edit_info[i].diffs.size(); j++ )
@@ -332,20 +336,24 @@ namespace namechanger {
 						switch( diff.operation )
 						{
 						case dmp::DIFF_DELETE:
-							richTextBox1->SelectionStart = character_offsets[i] + diff_offset;
+							richTextBox1->SelectionStart = character_offsets_left[i] + diff_offset_left;
 							richTextBox1->SelectionLength = diff.text.size();
 //							richTextBox1->SelectionFont=fnt;
 							richTextBox1->SelectionColor     = Color::Red;
 							richTextBox1->SelectionBackColor = Color::Pink;
+							diff_offset_left += diff.text.length();
 							break;
 						case dmp::DIFF_INSERT:
-							richTextBox2->SelectionStart = character_offsets[i] + diff_offset;
+							richTextBox2->SelectionStart = character_offsets_right[i] + diff_offset_right;
 							richTextBox2->SelectionLength = diff.text.size();
 //							richTextBox2->SelectionFont=fnt;
 							richTextBox2->SelectionColor     = Color::Red;
 							richTextBox2->SelectionBackColor = Color::Pink;
+							diff_offset_right += diff.text.length();
 							break;
 						case dmp::DIFF_EQUAL:
+							diff_offset_left  += diff.text.length();
+							diff_offset_right += diff.text.length();
 							break;
 						default:
 							LOG_PRINTF_ERROR(( "An unsupported diff type: %d", (int)diff.operation ));

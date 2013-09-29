@@ -113,6 +113,7 @@ namespace namechanger {
 	private: System::Windows::Forms::Button^  button2;
 	private: System::Windows::Forms::Label^  label5;
 	private: System::Windows::Forms::CheckBox^  checkBox1;
+	private: System::Windows::Forms::Button^  button3;
 
 	protected: 
 
@@ -142,6 +143,7 @@ namespace namechanger {
 			this->label2 = (gcnew System::Windows::Forms::Label());
 			this->button1 = (gcnew System::Windows::Forms::Button());
 			this->label5 = (gcnew System::Windows::Forms::Label());
+			this->button3 = (gcnew System::Windows::Forms::Button());
 			this->groupBox1->SuspendLayout();
 			this->SuspendLayout();
 			// 
@@ -260,10 +262,10 @@ namespace namechanger {
 			// 
 			// button1
 			// 
-			this->button1->Location = System::Drawing::Point(852, 659);
+			this->button1->Location = System::Drawing::Point(955, 662);
 			this->button1->Margin = System::Windows::Forms::Padding(4);
 			this->button1->Name = L"button1";
-			this->button1->Size = System::Drawing::Size(268, 40);
+			this->button1->Size = System::Drawing::Size(165, 37);
 			this->button1->TabIndex = 5;
 			this->button1->Text = L"Rename";
 			this->button1->UseVisualStyleBackColor = true;
@@ -278,12 +280,23 @@ namespace namechanger {
 			this->label5->TabIndex = 6;
 			this->label5->Text = L"Prevew";
 			// 
+			// button3
+			// 
+			this->button3->Location = System::Drawing::Point(785, 663);
+			this->button3->Name = L"button3";
+			this->button3->Size = System::Drawing::Size(163, 36);
+			this->button3->TabIndex = 7;
+			this->button3->Text = L"Reset";
+			this->button3->UseVisualStyleBackColor = true;
+			this->button3->Click += gcnew System::EventHandler(this, &Form1::button3_Click);
+			// 
 			// Form1
 			// 
 			this->AllowDrop = true;
 			this->AutoScaleDimensions = System::Drawing::SizeF(9, 17);
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
 			this->ClientSize = System::Drawing::Size(1276, 744);
+			this->Controls->Add(this->button3);
 			this->Controls->Add(this->label5);
 			this->Controls->Add(this->button1);
 			this->Controls->Add(this->label2);
@@ -385,10 +398,8 @@ namespace namechanger {
 				richTextBox2->SelectionLength = sl2;
 			 }
 
-	private: System::Void richTextBox1_TextChanged(System::Object^  sender, System::EventArgs^  e) {
-			 }
-	private: System::Void richTextBox2_TextChanged(System::Object^  sender, System::EventArgs^  e) {
-
+	private: void OnDestTextBoxTextModified()
+			 {
 				 std::vector<std::string> lines;
 
 				 std::string text = to_string( richTextBox2->Text );
@@ -435,6 +446,20 @@ namespace namechanger {
 				 LOG_PRINTF(( "edit_info.size(): %d, lines.size(): %d", (int)edit_info.size(), (int)lines.size() ));
 
 				 UpdateTextColors();
+			 }
+
+	private: void Reset()
+			 {
+				richTextBox2->Text = richTextBox1->Text;
+
+				OnDestTextBoxTextModified();
+			 }
+
+	private: System::Void richTextBox1_TextChanged(System::Object^  sender, System::EventArgs^  e) {
+			 }
+	private: System::Void richTextBox2_TextChanged(System::Object^  sender, System::EventArgs^  e) {
+
+				 OnDestTextBoxTextModified();
 			 }
 	private: System::Void Form1_Load(System::Object^  sender, System::EventArgs^  e) {
 			 }
@@ -599,6 +624,9 @@ private: System::Void textBox1_TextChanged(System::Object^  sender, System::Even
 						 textBox1->SelectionStart = ss - 1;
 				 }
 			 }
+		 }
+private: System::Void button3_Click(System::Object^  sender, System::EventArgs^  e) {
+			 Reset();
 		 }
 };
 }

@@ -11,3 +11,6 @@
 *.[eE][xX][eE]
 .[vV][cC]
 Debug
+Release
+lib
+log.html

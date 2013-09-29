@@ -80,12 +80,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\namechanger\boost_filesystem.cpp" />
+    <ClCompile Include="boost_filesystem.cpp" />
     <ClCompile Include="log\LogInputBase.cpp" />
     <ClCompile Include="log\LogOutput.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\namechanger\boost_filesystem.hpp" />
+    <ClInclude Include="boost_filesystem.hpp" />
     <ClInclude Include="log\DefaultLog.hpp" />
     <ClInclude Include="log\Log.hpp" />
     <ClInclude Include="log\LogInputBase.hpp" />

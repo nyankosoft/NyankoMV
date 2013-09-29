@@ -3,6 +3,7 @@
 
 #include <string>
 #include <vector>
+#include <boost/xpressive/xpressive.hpp>
 
 #include <msclr/marshal_cppstd.h>
 using namespace msclr::interop;
@@ -111,6 +112,7 @@ namespace namechanger {
 	private: System::Windows::Forms::Label^  label4;
 	private: System::Windows::Forms::Button^  button2;
 	private: System::Windows::Forms::Label^  label5;
+	private: System::Windows::Forms::CheckBox^  checkBox1;
 
 	protected: 
 
@@ -130,6 +132,7 @@ namespace namechanger {
 			this->richTextBox1 = (gcnew System::Windows::Forms::RichTextBox());
 			this->richTextBox2 = (gcnew System::Windows::Forms::RichTextBox());
 			this->groupBox1 = (gcnew System::Windows::Forms::GroupBox());
+			this->checkBox1 = (gcnew System::Windows::Forms::CheckBox());
 			this->button2 = (gcnew System::Windows::Forms::Button());
 			this->textBox2 = (gcnew System::Windows::Forms::TextBox());
 			this->textBox1 = (gcnew System::Windows::Forms::TextBox());
@@ -166,6 +169,7 @@ namespace namechanger {
 			// 
 			// groupBox1
 			// 
+			this->groupBox1->Controls->Add(this->checkBox1);
 			this->groupBox1->Controls->Add(this->button2);
 			this->groupBox1->Controls->Add(this->textBox2);
 			this->groupBox1->Controls->Add(this->textBox1);
@@ -179,6 +183,17 @@ namespace namechanger {
 			this->groupBox1->TabIndex = 2;
 			this->groupBox1->TabStop = false;
 			this->groupBox1->Text = L"Replace";
+			// 
+			// checkBox1
+			// 
+			this->checkBox1->AutoSize = true;
+			this->checkBox1->Location = System::Drawing::Point(261, 23);
+			this->checkBox1->Name = L"checkBox1";
+			this->checkBox1->Size = System::Drawing::Size(72, 21);
+			this->checkBox1->TabIndex = 5;
+			this->checkBox1->Text = L"Regex";
+			this->checkBox1->UseVisualStyleBackColor = true;
+			this->checkBox1->Visible = false;
 			// 
 			// button2
 			// 
@@ -545,7 +560,15 @@ namespace namechanger {
 private: System::Void button2_Click(System::Object^  sender, System::EventArgs^  e) {
 			 std::string src = to_string( richTextBox2->Text );
 			 std::string dest = src;
-			 boost::replace_all( dest, to_string(textBox1->Text), to_string(textBox2->Text) );
+
+			 if( checkBox1->Checked )
+			 {
+				 // Not implemented yet.
+			 }
+			 else
+			 {
+				 boost::replace_all( dest, to_string(textBox1->Text), to_string(textBox2->Text) );
+			 }
 
 			 LOG_PRINT( "Replace all - src: "  + src );
 			 LOG_PRINT( "Replace all - dest: " + dest );
